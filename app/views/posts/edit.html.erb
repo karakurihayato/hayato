@@ -1,0 +1,21 @@
+<%= form_for @post do |f| %>
+    <div class="field">
+    <%= f.label :場所 %>
+    <%= f.text_field :name, :size => 30 %>
+  </div>
+
+  
+<div class="field">
+    <%= f.label :年齢  %>
+    <%= f.select :age, 
+    [["A", "A"], 
+    ["B", "B"], 
+    ["C", "C"]], include_blank: "選択して下さい" %>
+  </div>
+  <div class="field">
+    <%= f.label :コメント  %>
+    <%= f.text_area :about, :size => "30x2" %>
+  </div>
+
+  <%= f.submit "編集する" %>
+<% end %>

@@ -1,0 +1,80 @@
+<h1>GeekTwitter</h1>
+<h3>Tweet詳細</h3>
+<div class="tweet">
+<p><%= @post.name %></p>
+<%= image_tag @post.image_url, size: "250x200" if @post.image? %>
+<p><%= @post.age %></p>
+<p><%= @post.about %></p>
+<p><%= @post.created_at %></p>
+<% if user_signed_in? %>
+      <% if current_user.already_liked?(@post) %>
+        <%= link_to post_like_path(@post), method: :delete do %>
+            <i class="fas fa-heart"></i><%= @post.likes.count %>
+        <% end %>
+      <% else %>
+        <%= link_to post_likes_path(@post), method: :post do %>
+          <i class="far fa-heart"></i><%= @post.likes.count %>
+        <% end %>
+      <% end %>
+    <% else %>
+    <i class="far fa-heart"></i><%= @post.likes.count %>
+    <% end %>
+</div>
+<h2>いいねしたユーザー</h2>
+<% @post.liked_users.each do |user| %>
+  <li><%= user.email %></li>
+<% end %>
+<% @post.tags.each do |tag| %>
+  <span><%= tag.name %></span>
+<% end %>
+<div class="comment-wrapper">
+  <p>コメント一覧</p>
+  <% @comments.each do |c| %>
+    <div>
+      <%= c.user.email unless c.user.blank? %>
+      <br>
+      <%= c.content %>
+    </div>
+      <br>
+  <% end %>
+
+  <% if user_signed_in? %>
+    <%= form_with(model: [@post, @comment], local: true) do |f| %>
+      <%= f.text_area :content %>
+      <%= button_tag type: "submit" do %>
+        <i class="far fa-comments"></i> コメントする
+      <% end %>
+    <% end %>
+  <% end %>
+</div>
+<%= link_to "Tweet一覧に戻る", posts_path %>
+<%= link_to "編集する", edit_post_path(@post.id) %>
+<div id='map'></div>
+
+<style>
+#map {
+  height: 600px;
+  width: 600px;
+}
+</style>
+
+<!-- js部分 -->
+<script>
+//初期マップの設定
+let map
+let marker
+function initMap(){
+  geocoder = new google.maps.Geocoder()
+
+  map = new google.maps.Map(document.getElementById('map'), {
+    center:  {lat: <%= @post.lat %>, lng: <%= @post.lng %>},
+    zoom: 15,
+  });
+
+   marker = new google.maps.Marker({
+    position:  {lat: <%= @post.lat %>, lng: <%= @post.lng %>},
+    map: map
+  });
+}
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC1ihFY7GiAOUN2hjjbcUygvoEOovVxdSQ&callback=initMap" async defer></script>

@@ -1,0 +1,100 @@
+<h1>自分の題名</h1>
+<h3>一覧ページ</h3>
+<h3>投稿を検索</h3>
+<% if user_signed_in? %>
+<%= link_to "マイページへ", user_path(current_user.id) %>
+<% end %>
+<%= form_tag({controller:"posts",action:"index"}, method: :get) do %>
+  <%= select_tag :search, options_for_select([['選択'],['A'], ['B'], ['C']]) %>
+  <% Tag.all.each do |t| %>
+    <li><%= check_box :tag_ids, t.name %><%= t.name %></li>
+<% end %>
+  <%= submit_tag '検索する'  %>
+<% end %>
+<%= link_to "新規投稿へ", new_post_path %>
+<div class="tweets-container">
+  <% @posts.each do |t| %>
+    <div class="tweet">
+    <%= link_to t.user.name, user_path(t.user.id) %>
+    <%= t.name %>
+      <%= image_tag t.image_url, size: "250x200" if t.image? %>
+      <%= t.age %>
+      <%= t.about %>
+      <% if user_signed_in? %>
+      <% if current_user.already_liked?(t) %>
+          <%= link_to post_like_path(id: t.id, post_id: t.id), method: :delete do %>
+            <i class="fas fa-heart"></i><%= t.likes.count %>
+          <% end %>
+      <% else %>
+          <%= link_to post_likes_path(id: t.id, post_id: t.id), method: :post do %>
+            <i class="far fa-heart"></i><%= t.likes.count %>
+          <% end %>
+      <% end %>
+  <% else %>
+  <i class="far fa-heart"></i><%= t.likes.count %>
+  <% end %>
+      <%= link_to "詳細へ", post_path(t.id) %>
+      <% if user_signed_in? && current_user.id == t.user_id %>
+      <%= link_to "編集する", edit_post_path(t.id) %>
+      <%= button_to "削除する", post_path(t.id), method: :delete %> 
+      <% end %> 
+      </div>
+  <% end %>
+</div>
+<div id='map'></div>
+
+<style>
+#map {
+  height: 600px;
+  width: 100%;
+}
+</style>
+
+<!-- js部分 -->
+<script>
+    function initMap() {
+
+      //初期表示位置
+      let latlng = new google.maps.LatLng(38.60, 139.5);
+      //デザイン
+      let styles = [
+           {
+            stylers: [
+             { "saturation": 0 },
+             { "lightness": 0 }
+            ]
+           }
+          ];
+
+      let map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 5.5,
+          styles: styles,
+          center: latlng
+      });
+      let transitLayer = new google.maps.TransitLayer();
+      transitLayer.setMap(map);
+
+//複数マーカー ここから
+      <% @posts.each do |post|%>
+        ( function() { 
+          let markerLatLng = { lat: <%= post.lat %>, lng: <%= post.lng %> }; // 緯度経度のデータ作成
+          let marker = new google.maps.Marker({ 
+            position: markerLatLng, 
+            map: map 
+          });
+//マーカーをクリックしたとき、詳細情報を表示
+          let infowindow = new google.maps.InfoWindow({
+            position: markerLatLng,
+            content: "<a href='<%= post_url(post.id) %>' target='_blank'><%= post.name %></a>"
+          }); //ここで詳細ページへのリンクを表示させる
+          marker.addListener('click', function() {
+            infowindow.open(map, marker);
+          });
+
+       })();
+      <% end %>
+      //複数マーカー ここまで  
+  }
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC1ihFY7GiAOUN2hjjbcUygvoEOovVxdSQ&callback=initMap" async defer></script>

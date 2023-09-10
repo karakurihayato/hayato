@@ -1,0 +1,76 @@
+.sign_up{
+    width: 100%;
+    background-color: aqua;
+    padding: 70px 0px;
+  .sign_up_box{
+    width: 880px;
+    height: 803px;
+    background-color: green;
+    margin: auto;
+
+    .title_area{
+        width: 880px;
+        height: 200px;
+        background-color: thistle;
+        padding-top: 60px;
+    }
+
+     .title{
+        width: 670px;
+        height: 80px;
+        background-color: darkviolet;
+        color: gold;
+        margin: auto;
+
+        font-size: 36px;
+        line-height: 80px;
+        text-align: center;
+    }
+    .title_area{
+        width: 600px;
+        height: 372px;
+        background-color: darkolivegreen;
+        margin: auto;
+    }
+
+    .field_area{
+        width: 600px;
+        height: 372px;
+        background-color: azure;
+        margin: auto;
+
+    }
+    .field{
+        margin-bottom: 40px;
+        .feild_input{
+            width: 600px;
+            height: 63px;
+            background-color: rgb(253, 60, 60);
+            border: 0px none;
+
+            font-size: 40px;
+            line-height: 70px;
+
+        }
+.share{
+    width: 100%;
+    text-align: center;
+    .share_text{
+        font-size: 15px;
+       .sign_up{
+         .sign_up_box{
+           width: 880px;
+           height: 803;
+           background-color: midnightblue;
+         }
+
+       }
+        color: blue;
+        text-decoration: none;
+    }
+
+}
+
+    }
+  }
+}
